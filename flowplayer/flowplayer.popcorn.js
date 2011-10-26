@@ -10,7 +10,54 @@ $f.addPlugin("popcorn", function() {
 	// * popcornPlayer: local instance of Popcorn player used by this plugin
 	// * lastSetVolume: cache value used by pollCurrentTime
 	// * lastSetCurrentTime: cache value used by pollCurrentTime
-	var el, pctInterval, popcornPlayer, lastSetVolume, lastSetCurrentTime,
+
+    var _events = {};
+    var _parent = this.getParent();
+    var el = {
+        parentNode : document,
+        offsetHeight : _parent.offsetHeight,
+        offsetWidth : _parent.offsetWidth,
+
+        getBoundingClientRect: function() {
+            return _parent.getBoundingClientRect();
+        },
+
+        // Add an event listener to the object
+        addEventListener: function( evtName, fn ) {
+            if ( !_events[ evtName ] ) {
+                _events[ evtName ] = [];
+            }
+            _events[ evtName ].push( fn );
+            return fn;
+        },
+
+        // Can take event object or simple string
+        dispatchEvent: function( oEvent ) {
+            var evt = oEvent,
+                eventInterface,
+                eventName = oEvent.type;
+
+            // A string was passed, create event object
+            if ( !eventName ) {
+                eventName = oEvent;
+                eventInterface  = Popcorn.events.getInterface( eventName );
+
+                if ( eventInterface ) {
+                    evt = document.createEvent( eventInterface );
+                    evt.initEvent( eventName, true, true, window, 1 );
+                }
+            }
+            Popcorn.forEach( _events[ eventName ], function( val ) {
+                try {
+                    val.call(el, evt);
+                }
+                catch(e) {
+                }
+            });
+        }
+    };
+
+	var pctInterval, popcornPlayer, lastSetVolume, lastSetCurrentTime,
 
 		// initialized in onBegin
 		lastClipPlugins = [],
@@ -113,7 +160,6 @@ $f.addPlugin("popcorn", function() {
 		//   onto the DOM Element
 		// * normalizes event names and values from FlowPlayer
 		//   onto the DOM Element
-		el = flowPlayer.getParent();
 
 		// ===================
 		// HTML5 Media Methods
@@ -226,7 +272,7 @@ $f.addPlugin("popcorn", function() {
 		},
 		onResume: function() {
 			el.paused = false;
-			dispatch( "play" );		
+			dispatch( "play" );
 		},
 		onPause: function() {
 			el.paused = true;
