@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<title>Flowplayer Popcorn Plugin: Twitter</title>
+<script src="../flowplayer/flowplayer-3.2.6.min.js"></script>
+<script src="../flowplayer.popcorn.js"></script>
+<script src="../popcorn/popcorn.js"></script>
+<script src="../popcorn/popcorn.twitter.js"></script>
+</head>
+<body>
+
+<div id="player" style="width:520px; height:330px;"></div>
+<div id="twitterdiv"></div>
+
+<script>
+
+var player = flowplayer("player", {
+		src: "../flowplayer/flowplayer-3.2.7.swf",
+		wmode: "transparent"
+	}, {
+		clip: {
+			autoPlay: false,
+			url: "http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv",
+			popcorn: {
+				twitter: [
+					{
+						start: 2, // seconds
+						end: 10, // seconds
+						title: 'Steve Song',
+						src: '@stevesong',
+						target: 'twitterdiv',
+					},
+					{
+						start: 5, // seconds
+						end: 20, // seconds
+						title: 'Oil Spill',
+						src: '#oilspill',
+						target: 'twitterdiv'
+					}
+				]
+			}
+		}
+	}).popcorn();
+
+player.load();
+
+</script>
+
+</body>
+</html>

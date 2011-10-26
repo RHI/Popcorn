@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<title>Flowplayer Popcorn Plugin</title>
+<script src="../flowplayer/flowplayer-3.2.6.min.js"></script>
+<script src="../flowplayer.popcorn.js"></script>
+<script src="../popcorn/popcorn.js"></script>
+<script src="../popcorn/popcorn.footnote.js"></script>
+<script src="../popcorn/popcorn.subtitle.js"></script>
+</head>
+<body>
+
+<div id="player" style="width:520px; height:330px;"></div>
+<div id="footnotediv"></div>
+
+<script>
+
+var player = flowplayer("player", {
+		src: "http://releases.flowplayer.org/swf/flowplayer-3.2.7.swf",
+		wmode: "transparent"
+	}, {
+		clip: {
+			duration: 6,
+			popcorn: {
+				footnote: [
+					{ start: 1, end: 2, text: "Footnote 1: from 1 until 2 seconds", target: 'footnotediv' },
+					{ start: 3, end: 4, text: "Footnote 2: from 3 until 4 seconds", target: 'footnotediv' }
+				]
+			}
+		},
+		// playlist with five entries
+		playlist: [
+
+			{
+				url: 'http://flowplayer.org/img/demos/national.jpg'
+			},
+
+			// JPG image
+			{
+				url: 'http://flowplayer.org/img/tutorial/tap-splash.jpg',
+				popcorn: {
+					subtitle: [
+						{ start: 2, end: 3, text: "Tap: from 2 until 3 seconds" },
+						{ start: 4, end: 5, text: "Tap: from 4 until 5 seconds" }
+					]
+				}				
+			},
+
+			// SWF file
+			{
+				url: 'http://releases.flowplayer.org/swf/clock.swf',
+				scaling: 'fit',
+				popcorn: {
+					footnote: [
+						{ start: 2, end: 3, text: "Clock: from 2 until 3 seconds", target: 'footnotediv' },
+						{ start: 4, end: 5, text: "Clock: from 4 until 5 seconds", target: 'footnotediv' }
+					]
+				}
+			},
+
+			// video
+			'http://blip.tv/file/get/KimAronson-TwentySeconds58192.flv',
+
+			// another image. works as splash for the audio clip
+			{url: 'http://flowplayer.org/img/demos/national.jpg', duration: 0},
+
+			// audio, requires audio plugin. custom duration
+			{url: 'http://releases.flowplayer.org/data/fake_empire.mp3', duration: 25}		
+
+		],
+		plugins: {
+			controls: {
+				playlist: true,
+
+				// use tube skin with a different background color
+				url: 'http://releases.flowplayer.org/swf/flowplayer.controls-tube-3.2.5.swf', 
+				backgroundColor: '#aedaff'
+			}
+		}
+	}).popcorn();
+
+player.load();
+
+</script>
+
+</body>
+</html>

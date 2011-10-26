@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<title>Flowplayer Popcorn Testsuite</title>
+<link rel="stylesheet" href="qunit/qunit.css">
+<script src="../flowplayer/flowplayer-3.2.6.min.js"></script>
+<script src="../flowplayer.popcorn.js"></script>
+<script src="../popcorn/popcorn.js"></script>
+<script src="../popcorn/popcorn.footnote.js"></script>
+<script src="../popcorn/popcorn.subtitle.js"></script>
+<script src="qunit/qunit.js"></script>
+<script src="tests.js"></script>
+</head>
+<body>
+
+<h1 id="qunit-header">Flowplayer Popcorn Testsuite</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+
+<div id="player" style="width:520px; height:330px;"></div>
+<div id="footnotediv"></div>
+
+<script>
+
+var flowp = flowplayer("player", {
+		src: "../flowplayer/flowplayer-3.2.7.swf",
+		wmode: "transparent"
+	}, {
+		clip: {
+			autoPlay: false,
+			url: "http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv",
+			popcorn: {
+				footnote: [
+					{ start: 0, end: 5, text: "Footnote 1: from 0 until 5 seconds", target: 'footnotediv' },
+					{ start: 10, end: 15, text: "Footnote 2: from 10 until 15 seconds", target: 'footnotediv' }
+				],
+				subtitle: [
+					{ start: 3, end: 12, text: 'Subtitle 1: from 3 until 12 seconds' },
+					{ start: 13, end: 17, text: 'Subtitle 2: from 13 until 17 seconds' }
+				]
+			}
+		}
+	}).popcorn();
+	
+flowp.onLoad(function() {
+	flowp.mute();
+	flowp.play();
+	// Play through two seconds of the video before running the tests so
+	// the current time tests can work with FlowPlayer's seek method
+	setTimeout(function() {
+		flowp.pause();
+		flowp.unmute();
+		flowp.seek(0);
+		beginTests();
+	}, 2000);
+});
+
+flowp.load();
+
+</script>
+
+</body>
+</html>

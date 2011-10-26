@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<title>Flowplayer Popcorn Plugin: Google Maps</title>
+<script src="../flowplayer/flowplayer-3.2.6.min.js"></script>
+<script src="../flowplayer.popcorn.js"></script>
+<script src="../popcorn/popcorn.js"></script>
+<script src="../popcorn/popcorn.googlemap.js"></script>
+</head>
+<body>
+
+<div id="player" style="width:520px; height:330px;"></div>
+
+<p> A Google Map displaying Toronto, Ontario will appear at 2 seconds and disappear at 12 seconds.</p>
+<p> A Google Map displaying Boston will appear at 8 seconds and disappear at 18 seconds.</p>
+<div style="width:2000px">
+	<div id="map1" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+	<div id="map2" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+</div>
+
+<script>
+
+var player = flowplayer("player", {
+		src: "../flowplayer/flowplayer-3.2.7.swf",
+		wmode: "transparent"
+	}, {
+		clip: {
+			autoPlay: false,
+			url: "http://pseudo01.hddn.com/vod/demo.flowplayervod/flowplayer-700.flv",
+			popcorn: {
+				googlemap: [
+					{
+						start: 2, // seconds
+						end: 12, // seconds
+						type: "ROADMAP",
+						target: "map1",
+						lat: 43.665429,
+						lng: -79.403323,
+						zoom: "10"
+					},
+					{
+						start: 8, // seconds
+						end: 18, // seconds
+						type: "ROADMAP",
+						target: "map2",
+						location:"boston",
+						zoom: 15
+					}
+				]
+			}
+		}
+	}).popcorn();
+
+player.load();
+
+</script>
+
+</body>
+</html>
