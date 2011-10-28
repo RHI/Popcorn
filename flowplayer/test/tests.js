@@ -21,7 +21,7 @@ function beginTests() {
 	// by design). 
 	// Translation: don't ever use Popcorn.instances except here
 	popc = Popcorn.instances[0];
-	el = document.getElementById( "player" );
+	el = popc.media;
 
 	test("init", function() {
 
