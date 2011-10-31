@@ -16,7 +16,7 @@
           start: 5, // seconds
           end: 15, // seconds
           topic: "queen_latifah",
-          target: "wikidiv"
+          target: "freebasediv"
         } )
    *
    */
@@ -72,7 +72,7 @@
 
     _setup : function( options ) {
         if (options.debug) {
-            console.log("popcorn.freebase._setup")
+            console.log("popcorn.freebase._setup");
             console.log(options)
         }
         
@@ -95,7 +95,6 @@
       //make sure the topic is formatted properly
       options.topic =  String(options.topic.split(' ').join('_')).toLowerCase();
 
-      
       //preload
       var service_url = "http://www.freebase.com/experimental/topic/standard" + "/" + options.lang + "/" + options.topic;
       if (options.debug)
@@ -106,11 +105,8 @@
             var result = response.result;
             options._result = response.result;
             options._fired = true;
-
             _out._data = options._result;
         });
-
-
     },
 
     start: function( event, options ){
@@ -148,7 +144,7 @@
     },
 
     end: function( event, options ){
-        if (options.callback) 
+        if (options.callback)
             options.callback({event:"end",topic:options.topic,result:options._result});
 
         $("#" + options.target).html("");

@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+
+    <script src="../../../lib/popcorn/popcorn.js"></script>
+    <script src="../../../lib/popcorn/popcorn.youtube.js"></script>
+
+    <script src="../popcorn.freebase.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+
+    <script id="summaryTemplate" type="text/x-jquery-tmpl">
+        <div class="freebase">
+            <div><img src="${data.thumbnail}?maxheight=300&maxwidth=300"/></div>
+            <div>${data.text}</div>
+            <p>${data.description}</p>
+        </div>
+    </script>
+
+
+    <script id="fullTemplate" type="text/x-jquery-tmpl">
+        <div class="freebase">
+                <li>name = ${data.text.toLowerCase()}</li>
+                <li>desc = ${data.description.split(".")[0]}</li>
+                <li>thumb = <img src="${data.thumbnail}?maxheight=300&maxwidth=300"/></li>
+                <li>
+                    <ul>TYPES
+                        {{each data.type}}
+                        <li>${text}</li>
+                        {{/each}}
+                    </ul>
+                </li>
+                <li>
+                    <ul>PROPERTIES
+                        {{each(prop,val) data.properties}}
+                        <li><a onclick="">${prop} = ${val.text}</a></li>
+                        {{/each}}
+                    </ul>
+                </li>
+        </div>
+    </script>
+
+    <script id="propTemplate" type="text/x-jquery-tmpl">
+            <div class="freebase">
+                <div>
+                    ${title}
+                </div>
+
+                {{each props}}
+                <li>${text}</li>
+                {{/each}}
+            </div>
+    </script>
+
+
+    <script type="text/javascript">
+        var example;
+
+        // ensure the web page (DOM) has loaded
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Create a popcorn instance by calling the Youtube player plugin
+            example = Popcorn("#video");
+
+            example.freebase({
+                debug: true,
+                start:2,
+                end:8,
+                target:"freebasediv",
+                topic:"maize",
+                template: [{title:"Nutritional Facts",name:"propTemplate",prop:"/food/food/nutrients"}],
+            });
+
+            example.freebase({
+                debug: true,
+                start:8,
+                end:16,
+                target:"freebasediv",
+                topic:"joyrex_j4_ep",
+                template: [{name:"summaryTemplate"}]
+            });
+
+            example.freebase({
+                debug: true,
+                start:16,
+                end:26,
+                target:"freebasediv",
+                topic:"tim_berners-lee",
+                template: [{name:"fullTemplate"}]
+            });
+
+            // play the video right away
+            example.play();
+
+        }, false);
+    </script>
+
+    <style>
+        #video {
+            float: left;
+            width: 250px;
+        }
+        #freebasediv {
+            margin-left: 270px;
+            width: 400px;
+        }
+
+        .freebase {
+        }
+
+    </style>
+
+</head>
+<body>
+
+<h1 id="qunit-header">Popcorn Freebase Plug-in Demo</h1>
+<p> At 2s, the nutritional contents of Maize.</p>
+<p> At 8s, a summary of the album in which this song appeared.</p>
+<p> At 16s, a top-level property dump for the entry on Tim Berners-Lee.</p>
+
+<video style="background:#000" id="video" preload="auto" autobuffer="" controls="" poster="http://videos.mozilla.org/serv/webmademovies/popcornposter.png">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.mp4" type="video/mp4">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.webm" type="video/webM">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.ogv" type="video/ogg">
+    <p>Your user agent does not support the HTML5 Video element.</p>
+</video>
+
+</video>
+
+<div id="freebasediv">
+</div>
+
+
+
+</body>
+</html>
