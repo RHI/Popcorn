@@ -42,7 +42,7 @@
             about:{
                 name: "Popcorn Freebase Plugin",
                 version: "0.1",
-                author: "@kylemorton",
+                author: "@kyledmorton",
                 website: "www.ramp.com"
             },
             options:{
