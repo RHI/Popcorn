@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="../../lib/popcorn/popcorn.js"></script>
+    <script src="../../lib/popcorn/popcorn.subtitle.js"></script>
+
+    <link rel="stylesheet" href="../../lib/video-js/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+    <link rel="stylesheet" href="../../lib/video-js/skins/tube.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+
+    <script src="popcorn.playlist.js"></script>
+
+
+    <script type="text/javascript">
+        // ensure the web page (DOM) has loaded
+        var playlist, popcorn;
+        document.addEventListener("DOMContentLoaded", function () {
+
+            playlist = playlist({
+                container : '#playlistdiv',
+                loop: true,
+                autoAdvance: true,
+                autoPlay: true
+            });
+
+
+            var trailer = Popcorn('#trailer');
+            trailer.subtitle({
+                start: 3,
+                end: 15,
+                text: "item subtitle"
+            });
+
+            playlist.queue( trailer );
+            playlist.queue( '#wtfpopcorn' );
+            playlist.queue( '#sintel' );
+
+            /* events */
+            var logfn = function (e) {
+                log("Event .. " + e.type);
+            };
+            playlist.addEventListener('play', logfn);
+            playlist.addEventListener('pause', logfn);
+            playlist.addEventListener('ended', logfn);
+            playlist.addEventListener('trackChange', logfn);
+            playlist.addEventListener('playlistComplete', logfn);
+            playlist.addEventListener('volumechange', logfn);
+
+            /* compatible with popcorn */
+
+            popcorn = Popcorn( playlist );
+            popcorn.subtitle({
+                start: 1,
+                end: 5,
+                text: "playlist subtitle 1",
+                target : "subtitlediv"
+            });
+            popcorn.subtitle({
+                start: 8,
+                end: 15,
+                text: "playlist subtitle 2",
+                target : "subtitlediv"
+            });
+
+            popcorn.play();
+
+
+
+        }, false);
+
+        var start = (new Date()).getTime();
+        function log (msg) {
+
+            var time =  Math.round( ((new Date()).getTime() - start) / 1000 );
+            msg = time + "s :: " + msg;
+            var el = $('<div></div>').text(msg);
+            $('#log').prepend(el);
+        }
+    </script>
+
+    <style>
+        .video, #playlistdiv {
+            display: block;
+            background: black;
+            width: 400px;
+            height: 250px;
+            margin:  5px 0  ;
+        }
+
+        #subtitlediv{
+            width: 396px;
+            background: #eee;
+            height: 1em;
+            padding:  2px;
+            text-align: center;
+            margin:  5px 0  ;
+        }
+        #log {
+            width: 396px;
+            background: #eee;
+            color: blue;
+            font-size: .9em;
+            font-family: monospace;
+            text-align: left;
+            padding:  2px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="playlist.play();">playlist.play()</button>
+<button onclick="playlist.pause();">playlist.pause()</button>
+<button onclick="playlist.previous();">playlist.previous()</button>
+<button onclick="playlist.next();">playlist.next()</button>
+<button onclick="playlist.muted = true ">playlist.mute = true</button>
+<button onclick="playlist.muted = false ">playlist.mute = false</button>
+
+<div id="playlistdiv">
+</div>
+<div id="subtitlediv">
+</div>
+
+<div id="log">
+</div>
+
+<video class="video" id="trailer" controls="controls" autobuffer="autobuffer">
+    <source src="../../lib/media/trailer.mp4" type="video/mp4">
+    <source src="../../lib/media/trailer.ogv" type="video/ogv">
+    <source src="../../lib/media/trailer.webm" type="video/webm">
+</video>
+
+<video class="video" id="wtfpopcorn" controls="controls" autobuffer="autobuffer">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.mp4" type="video/mp4">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.webm" type="video/webM">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.ogv" type="video/ogg">
+</video>
+
+<video class="video" id="sintel" controls="controls" autobuffer="autobuffer">
+    <source src="http://ftp.nluug.nl/ftp/graphics/blender/apricot/trailer/sintel_trailer-480p.mp4" type="video/mp4">
+    <source src="http://ftp.nluug.nl/ftp/graphics/blender/apricot/trailer/sintel_trailer-480p.ogv" type="video/ogg">
+</video>
+
+</body>
+</html>
