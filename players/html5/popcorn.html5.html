@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+
+    <script src="../../lib/popcorn/popcorn.js"></script>
+    <script src="popcorn.html5.js"></script>
+
+
+    <script type="text/javascript">
+        // ensure the web page (DOM) has loaded
+        var popcorn;
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Create a popcorn instance by calling the Youtube player plugin
+            popcorn = Popcorn.video("#videodiv", [
+                {
+                    src : "../../lib/media/trailer.mp4",
+                    type : "video/mp4"
+                },
+                {
+                    src : "../../lib/media/trailer.ogv",
+                    type : "video/ogv"
+                }
+            ],{
+                controls : "controls"
+            });
+
+
+            popcorn.volume(.1);
+
+            popcorn.play();
+
+        }, false);
+    </script>
+
+</head>
+<body>
+
+<div id="videodiv" style="width: 400px; height: 225px;">
+</div>
+
+
+
+</body>
+</html>
