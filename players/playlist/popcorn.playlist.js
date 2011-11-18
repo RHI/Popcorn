@@ -20,33 +20,23 @@
         if( this.config.container )
             this.container = getElement(this.config.container);
 
+        // container proxy
         this._containerMap('parentNode');
         this._containerMap('offsetHeight');
         this._containerMap('offsetWidth');
         this._containerMap('getBoundingClientRect');
 
+        // media proxy
         this._mediaMap("duration");
         this._mediaMap("muted");
         this._mediaMap("volume");
         this._mediaMap("currentTime");
         this._mediaMap("readyState");
+        this._mediaFn("play");
+        this._mediaFn("pause");
     };
 
     Playlist.prototype = {
-
-        /* media interface */
-        play : function () {
-            this.media().play();
-        },
-
-        pause : function () {
-            this.media().pause();
-        },
-
-//        getBoundingClientRect : function () {
-//            return this.container.getBoundingClientRect();
-//        },
-
 
         /* playlist additions */
 
@@ -62,15 +52,15 @@
             this.addListeners(video);
 
             if( this.container ) {
-                if( this._media.length == 0 )
-                    this.container.appendChild(video.container || video);
-                else
-                    this.offscreen.appendChild(video.container || video);
+                var c = $(this.container);
+                var el = video.container || video;
+                $(el).css('height', '100%' );
+                $(el).css('width', '100%' );
+                c.append(el);
             }
 
             this._media.push(video);
         },
-
 
         addEventListener : function( evtName, fn ) {
             if ( !this._events[ evtName ] )
@@ -108,16 +98,7 @@
                 })
             });
 
-            media.addEventListener("play", function (){
-//                console.log("play")
-            });
-
-            media.addEventListener("pause", function (){
-//                console.log("pause")
-            });
-
             media.addEventListener("ended", function (){
-                console.log("END")
                 self._onEnd();
             });
         },
@@ -144,7 +125,7 @@
         },
 
         index : function ( i ) {
-            if( i != null ) {
+            if( i != null && i != this._index ) {
                 var old = this.media();
                 this._index = i;
                 var media = this.media();
@@ -157,8 +138,10 @@
                 media.muted = old.muted;
 
                 if( this.container ) {
-                    this.offscreen.appendChild(old.container || old);
-                    this.container.appendChild(media.container || media);
+                    var c = $(this.container);
+                    var offset = $(media.container || media).position().top;
+                    var total = offset + c.scrollTop();
+                    $(this.container).scrollTop( total );
                 }
 
                 this.dispatchEvent("trackChange");
@@ -173,8 +156,9 @@
             if(! this.config.autoAdvance )
                 return;
 
-            if( this._index + 1 == this._media.length )
+            if( this._index + 1 == this._media.length ) {
                 this.dispatchEvent("playlistComplete");
+            }
 
             this.next();
         },
@@ -189,6 +173,9 @@
         _containerMap : function (prop ){
             var self = this;
             var container = this.container;
+
+            if( ! container )
+                return;
 
             if( container[prop] instanceof Function){
                 self[prop] = function () {
@@ -213,6 +200,14 @@
                 return self.media()[prop];
             };
             defineProperty(self, prop, { get : fn, set : fn });
+        },
+
+        _mediaFn : function (prop){
+            var self = this;
+            this[prop] = function () {
+                var m = this.media();
+                m[prop].call(m, arguments);
+            }
         }
     };
 

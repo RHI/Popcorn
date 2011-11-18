@@ -4,6 +4,7 @@
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script src="../../lib/popcorn/popcorn.js"></script>
+    <script src="../../lib/popcorn/popcorn.youtube.js"></script>
     <script src="../../lib/popcorn/popcorn.subtitle.js"></script>
 
     <link rel="stylesheet" href="../../lib/video-js/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
@@ -35,6 +36,22 @@
             playlist.queue( trailer );
             playlist.queue( '#wtfpopcorn' );
             playlist.queue( '#sintel' );
+
+            var youtube1 = Popcorn.youtube( 'youtubediv', 'http://www.youtube.com/watch?v=9oar9glUCL0&rel=0&controls=1&showinfo=0' );
+            var youtube2 = Popcorn.youtube( 'youtubediv2', 'http://www.youtube.com/watch?v=cXsvy2tBJlU&rel=0&controls=1&showinfo=0' );
+            playlist.queue(youtube1);
+            playlist.queue(youtube2);
+
+
+            /*  sample playlist ui */
+            $('#trackselect').children()[ playlist.index() ].selected=true
+
+            playlist.addEventListener("trackChange", function (){
+                $('#trackselect').children()[ playlist.index() ].selected=true
+            })
+            $('#trackselect').bind("change click", function (e){
+               playlist.index( this.selectedIndex );
+            });
 
             /* events */
             var logfn = function (e) {
@@ -80,13 +97,13 @@
     </script>
 
     <style>
-        .video, #playlistdiv {
-            display: block;
-            background: black;
-            width: 400px;
-            height: 250px;
-            margin:  5px 0  ;
-        }
+         #playlistdiv {
+             width: 400px;
+             height: 250px;
+             background:  black;
+             overflow: hidden;
+             position: relative;
+         }
 
         #subtitlediv{
             width: 396px;
@@ -107,19 +124,35 @@
             max-height: 100px;
             overflow-y: auto;
         }
+        button {
+            float: left;
+        }
     </style>
 </head>
 <body>
 
-<button onclick="playlist.play();">playlist.play()</button>
-<button onclick="playlist.pause();">playlist.pause()</button>
-<button onclick="playlist.previous();">playlist.previous()</button>
-<button onclick="playlist.next();">playlist.next()</button>
-<button onclick="playlist.muted = true ">playlist.mute = true</button>
-<button onclick="playlist.muted = false ">playlist.mute = false</button>
+<div>
+    <button onclick="playlist.play();">playlist.play()</button>
+    <button onclick="playlist.pause();">playlist.pause()</button>
+    <button onclick="playlist.previous();">playlist.previous()</button>
+    <button onclick="playlist.next();">playlist.next()</button>
+    <button onclick="playlist.muted = true ">playlist.mute = true</button>
+    <button onclick="playlist.muted = false ">playlist.mute = false</button>
+        <select id="trackselect" size=5>
+            <option>trailer</option>
+            <option>wtfpopcorn</option>
+            <option>sintel</option>
+            <option>youtube1</option>
+            <option>youtube2</option>
+        </select>
+</div>
+
+
+
 
 <div id="playlistdiv">
 </div>
+
 <div id="subtitlediv">
 </div>
 
@@ -142,6 +175,10 @@
     <source src="http://ftp.nluug.nl/ftp/graphics/blender/apricot/trailer/sintel_trailer-480p.mp4" type="video/mp4">
     <source src="http://ftp.nluug.nl/ftp/graphics/blender/apricot/trailer/sintel_trailer-480p.ogv" type="video/ogg">
 </video>
+
+<div class="video" id="youtubediv">
+<div class="video" id="youtubediv2">
+</div>
 
 </body>
 </html>
