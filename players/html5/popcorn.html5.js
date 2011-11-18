@@ -11,6 +11,7 @@
         var container = document.getElementById(target.substr(1));
 
         var video = createElement('video', attributes);
+        video.style.width = video.style.height = "100%";
 
         var i, s;
         for(i = 0; i< sources.length; i++){
