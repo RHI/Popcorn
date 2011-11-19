@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-
+    <title> Mixed HTML5/Youtube PopcornJS Playlist w/ VideoJS Player</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script src="../lib/video-js/video.js"></script>
     <script src="../lib/popcorn/popcorn.js"></script>
@@ -31,7 +31,8 @@
             pl.queue(youtube1);
 
             // track 3
-            pl.queue( "#bigbuck" );
+            var bigbuck = Popcorn('#bigbuck');
+            pl.queue( bigbuck );
 
 
             /* sample playlist ui */
@@ -54,7 +55,11 @@
             });
 
             /* Video JS */
-            vjs = VideoJS.setup([pl]);
+            vjs = VideoJS.setup([pl], {
+                controlsHiding : false,
+                controlsAtStart: true,
+                controlsBelow: true
+            });
 
 
         }, false);
@@ -86,6 +91,11 @@
     </style>
 </head>
 <body>
+<h3>
+    Mixed HTML5/Youtube PopcornJS Playlist w/ VideoJS Player
+    <a  style="font-size: .8em; margin-left:  10px;" href="https://github.com/RHI/Popcorn/blob/master/demos/videojs-playlist.html">&raquo;  GitHub</a>
+</h3>
+
 
 <div class='height: 20px;'>
     <button onclick="pl.play();">pl.play()</button>
