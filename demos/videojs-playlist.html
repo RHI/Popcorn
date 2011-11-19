@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="../lib/video-js/video.js"></script>
+    <script src="../lib/popcorn/popcorn.js"></script>
+    <script src="../players/playlist/popcorn.playlist.js"></script>
+    <script src="../lib/popcorn/popcorn.youtube.js"></script>
+
+    <link rel="stylesheet" href="../lib/video-js/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+    <link rel="stylesheet" href="../lib/video-js/skins/tube.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+
+    <script type="text/javascript">
+        // ensure the web page (DOM) has loaded
+        var pl, vjs;
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            /* Playlist setup */
+            pl = playlist({
+                container : '#playlistdiv',
+                loop: true
+            });
+
+            // track 1
+            pl.queue( "#popcornjs" );
+
+            // track 2
+            var youtube1 = Popcorn.youtube( '#youtube', 'http://www.youtube.com/watch?v=9oar9glUCL0&rel=0&controls=0&showinfo=0&iv_load_policy=3' );
+            pl.queue(youtube1);
+
+            // track 3
+            pl.queue( "#bigbuck" );
+
+
+            /* sample playlist ui */
+            var select = $('#trackselect');
+            select.bind("change click", function (e){
+               pl.index( this.selectedIndex );
+            });
+
+            var tracks = pl.media();
+            $.map( tracks, function (video) {
+                var o = $('<option></option>');
+                o.text( video.id );
+                select.append(o)
+            });
+            select.children()[0].selected = true;
+            select.attr('size', tracks.length);
+
+            pl.addEventListener("trackChange", function (){
+                select.children()[ pl.index() ].selected=true
+            });
+
+            /* Video JS */
+            vjs = VideoJS.setup([pl]);
+
+
+        }, false);
+    </script>
+
+    <style>
+        #playlistdiv {
+            background:  black;
+            overflow: auto;
+            position: relative;
+            width: 400px;
+            height: 250px;
+        }
+
+        button {
+            float: left;
+        }
+        video {
+            width: 400px;
+            height: 250px;
+            margin-bottom: 1px;
+        }
+
+         .vjs-fullscreen #playlistdiv {
+             height: 100%;
+             width: 100%;
+         }
+
+    </style>
+</head>
+<body>
+
+<div class='height: 20px;'>
+    <button onclick="pl.play();">pl.play()</button>
+    <button onclick="pl.pause();">pl.pause()</button>
+    <button onclick="pl.previous();">pl.previous()</button>
+    <button onclick="pl.next();">pl.next()</button>
+    <button onclick="pl.muted = true ">pl.mute = true</button>
+    <button onclick="pl.muted = false ">pl.mute = false</button>
+    <select id="trackselect">
+    </select>
+</div>
+
+
+
+<div class="video-js-box">
+    <div id="playlistdiv">
+    </div>
+</div>
+
+
+<div id="youtube"></div>
+
+<video class="video" width="800" height="450" id="popcornjs" >
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.mp4" type="video/mp4">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.webm" type="video/webM">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.ogv" type="video/ogg">
+</video>
+
+<video class="video" width="800" height="450" id="bigbuck">
+    <source src="http://content.bitsontherun.com/videos/bkaovAYt-injeKYZS.mp4" type="video/mp4">
+    <source src="http://content.bitsontherun.com/videos/bkaovAYt-27m5HpIu.webm" type="video/webm">
+</video>
+
+
+
+</body>
+</html>

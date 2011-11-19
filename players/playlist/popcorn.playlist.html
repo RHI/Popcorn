@@ -55,7 +55,8 @@
 
             /* events */
             var logfn = function (e) {
-                log("Event .. " + e.type);
+                log("Event .. " + e.type + " .. ");
+                console.log([e, e.type, e.target.id, e.currentTarget.i])
             };
             playlist.addEventListener('play', logfn);
             playlist.addEventListener('pause', logfn);

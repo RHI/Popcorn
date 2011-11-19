@@ -4,6 +4,7 @@
 
     var defaults = {
         autoAdvance : true,
+        autoPlay : true,
         loop : false
     };
 
@@ -15,16 +16,25 @@
         this._media = [];
         this._events = {};
         this._index = 0;
-        this.offscreen = document.createElement('div')
 
-        if( this.config.container )
+        if( this.config.container ) {
             this.container = getElement(this.config.container);
+            $(this.container).css("overflow", "hidden");
+        }
 
         // container proxy
         this._containerMap('parentNode');
         this._containerMap('offsetHeight');
         this._containerMap('offsetWidth');
+//        this._containerMap('height', 'offsetHeight');
+//        this._containerMap('width', 'offsetWidth');
+        this.height = this.offsetHeight;
+        this.width = this.offsetWidth;
+        this._containerMap('style');
+        this._containerMap('className');
         this._containerMap('getBoundingClientRect');
+        this._containerMap('getElementsByTagName');
+
 
         // media proxy
         this._mediaMap("duration");
@@ -32,8 +42,12 @@
         this._mediaMap("volume");
         this._mediaMap("currentTime");
         this._mediaMap("readyState");
+        this._mediaMap("children");
+        this._mediaFn("canPlayType");
+        this._mediaFn("canPlayExt");
         this._mediaFn("play");
         this._mediaFn("pause");
+        this._mediaFn("webkitEnterFullScreen");
     };
 
     Playlist.prototype = {
@@ -56,6 +70,9 @@
                 var el = video.container || video;
                 $(el).css('height', '100%' );
                 $(el).css('width', '100%' );
+                $(el).css('position', 'absolute' );
+                $(el).css('top', this._media.length ? "100%" : 0);
+                $(el).css('left', '0' );
                 c.append(el);
             }
 
@@ -70,14 +87,16 @@
             return fn;
         },
 
-        dispatchEvent : function( e ) {
-            var eventType = e.type || e;
+        dispatchEvent : function( type, target) {
             var self = this;
+            if( target && !( target === this.current() ) ) {
+                return;
+            }
 
             // A string was passed, create event object
             var evt = {
-                type : eventType,
-                target : e.target || self,
+                type : type,
+                target : target || self,
                 currentTarget : self
             };
             Popcorn.forEach( this._events[ evt.type ], function( listener ) {
@@ -94,7 +113,7 @@
             var self = this;
             $(events).each(function (i, val){
                 media.addEventListener(val, function (evt) {
-                    self.dispatchEvent( evt );
+                    self.dispatchEvent( evt.type, media );
                 })
             });
 
@@ -126,9 +145,9 @@
 
         index : function ( i ) {
             if( i != null && i != this._index ) {
-                var old = this.media();
+                var old = this.current();
                 this._index = i;
-                var media = this.media();
+                var media = this.current();
 
                 // reset previous clip
                 old.pause();
@@ -139,9 +158,14 @@
 
                 if( this.container ) {
                     var c = $(this.container);
-                    var offset = $(media.container || media).position().top;
-                    var total = offset + c.scrollTop();
-                    $(this.container).scrollTop( total );
+                    var oc = $(old.container || old);
+                    var mc = $(media.container || media);
+                    oc.css("top", "100%")
+                    mc.css("top", 0)
+//                    var offset = $(media.container || media).position().top;
+//                    var total = offset + c.scrollTop();
+//                    $(this.container).scrollTop( total );
+
                 }
 
                 this.dispatchEvent("trackChange");
@@ -163,31 +187,37 @@
             this.next();
         },
 
-        media : function (i) {
+        media : function (){
+            return $.merge([], this._media);
+        },
+
+        current : function (i) {
             if( i == null)
                 i = this._index;
             return this._media[i]
         },
 
         /* Utilities */
-        _containerMap : function (prop ){
+        _containerMap : function (prop, altprop ){
             var self = this;
             var container = this.container;
 
             if( ! container )
                 return;
 
-            if( container[prop] instanceof Function){
+            if( altprop === undefined)
+                altprop = prop;
+
+            if( container[altprop] instanceof Function){
                 self[prop] = function () {
-                    return container[prop].apply(container, arguments);
+                    return container[altprop].apply(container, arguments);
                 };
                 return;
             }
             var fn = function (val) {
-                if( container[prop] )
                 if( val !== undefined )
-                    container[prop] = val;
-                return container[prop];
+                    container[altprop] = val;
+                return container[altprop];
             };
             defineProperty(self, prop, { get : fn, set : fn });
         },
@@ -196,8 +226,8 @@
             var self = this;
             var fn = function (val) {
                 if( val !== undefined )
-                    self.media()[prop] = val;
-                return self.media()[prop];
+                    self.current()[prop] = val;
+                return self.current()[prop];
             };
             defineProperty(self, prop, { get : fn, set : fn });
         },
@@ -205,8 +235,8 @@
         _mediaFn : function (prop){
             var self = this;
             this[prop] = function () {
-                var m = this.media();
-                m[prop].call(m, arguments);
+                var m = this.current();
+                return m[prop].apply(m, arguments);
             }
         }
     };

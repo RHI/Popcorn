@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+
+    <script src="../lib/video-js/video.js"></script>
+
+    <link rel="stylesheet" href="../lib/video-js/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+
+    <script type="text/javascript">
+        VideoJS.DOMReady(function(){
+
+          // Using the video's ID or element
+          var myPlayer = VideoJS.setup("webmademovies");
+        });
+    </script>
+
+    <style>
+
+        video {
+            background: black;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="video-js-box">
+<video class="video" width="800" height="450" id="webmademovies" controls="controls" autobuffer="autobuffer">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.mp4" type="video/mp4">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.webm" type="video/webM">
+    <source src="http://videos.mozilla.org/serv/webmademovies/wtfpopcorn.ogv" type="video/ogg">
+</video>
+</div>
+
+</body>
+</html>
