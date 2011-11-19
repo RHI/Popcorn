@@ -20,6 +20,7 @@
         if( this.config.container ) {
             this.container = getElement(this.config.container);
             $(this.container).css("overflow", "hidden");
+            $(this.container).css("position", "relative");
         }
 
         // container proxy
