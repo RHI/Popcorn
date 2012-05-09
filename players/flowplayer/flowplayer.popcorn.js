@@ -30,6 +30,12 @@ $f.addPlugin("popcorn", function() {
             _events[ evtName ].push( fn );
             return fn;
         },
+        
+        // Remove an event listener from the object
+        removeEventListener: function( evtName ) {
+            _events[ evtName ] = [];
+            return evtName;
+        },
 
         // Can take event object or simple string
         dispatchEvent: function( oEvent ) {
